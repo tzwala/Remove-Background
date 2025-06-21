@@ -5,31 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ultimate Background Remover</title>
   <style>
-    /* All root variables and basic styles are the same */
+    /* Root variables are unchanged */
     :root { --transition-speed: 0.5s; --animation-speed: 0.8s; --bg-gradient-light: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); --container-bg-light: rgba(255, 255, 255, 0.3); --container-border-light: 1px solid rgba(255, 255, 255, 0.5); --text-color-light: #3a3b5a; --note-color-light: #5c5d8a; --element-bg-light: rgba(255, 255, 255, 0.4); --button-bg-light: #6a82fb; --skeleton-bg-light: rgba(0, 0, 0, 0.05); --valid-color: #2ecc71; --invalid-color: #e74c3c; --bg-gradient-dark: linear-gradient(135deg, #2d388a 0%, #060920 100%); --container-bg-dark: rgba(0, 0, 0, 0.2); --container-border-dark: 1px solid rgba(255, 255, 255, 0.1); --text-color-dark: #e0e1ff; --note-color-dark: #a0a3d4; --element-bg-dark: rgba(255, 255, 255, 0.05); --button-bg-dark: #82a4ff; --skeleton-bg-dark: rgba(255, 255, 255, 0.05); }
+    /* Basic styles are unchanged */
     * { margin: 0; padding: 0; box-sizing: border-box; } html { font-size: 16px; } body { font-family: 'Poppins', sans-serif; background: var(--bg-gradient-light); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; } body.dark-mode { background: var(--bg-gradient-dark); } #theme-transition-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; clip-path: circle(0% at var(--x, 50%) var(--y, 50%)); transition: clip-path var(--animation-speed) ease-in-out; } #theme-transition-layer.is-revealing { clip-path: circle(150% at var(--x) var(--y)); } .container { width: 100%; max-width: 450px; padding: 25px; text-align: center; position: relative; background: var(--container-bg-light); border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: var(--container-border-light); transition: background var(--transition-speed) ease, border var(--transition-speed) ease; } body.dark-mode .container { background: var(--container-bg-dark); border: var(--container-border-dark); }
     h1, .file-label, #drop-zone p, #error-message, button, #theme-toggle, .tab-btn, #imageUrlInput { transition: all var(--transition-speed) ease; } h1 { font-size: 2rem; color: var(--text-color-light); margin-bottom: 15px; } body.dark-mode h1 { color: var(--text-color-dark); }
-    #theme-toggle { position: absolute; top: 15px; right: 15px; background: transparent; border: none; cursor: pointer; width: 30px; height: 30px; color: var(--text-color-light); } body.dark-mode #theme-toggle { color: var(--text-color-dark); } #theme-toggle:hover { transform: scale(1.1) rotate(15deg); } #theme-toggle svg { width: 100%; height: 100%; fill: currentColor; } .sun-icon { display: none; } body.dark-mode .moon-icon { display: none; } body.dark-mode .sun-icon { display: block; }
+    
+    /* --- *** UPDATED THEME TOGGLE STYLES *** --- */
+    #theme-toggle {
+        position: absolute; top: 15px; right: 15px;
+        background: transparent; border: none; cursor: pointer;
+        width: 35px; height: 35px;
+        color: var(--text-color-light);
+        font-size: 1.5rem; /* Emoji size */
+        display: flex; align-items: center; justify-content: center;
+        line-height: 1;
+        transition: color var(--transition-speed) ease, transform 0.3s ease;
+    }
+    body.dark-mode #theme-toggle { color: var(--text-color-dark); }
+    #theme-toggle:hover { transform: scale(1.1) rotate(25deg); }
+    
+    /* Logic to show/hide the correct emoji */
+    .sun-icon { display: none; }
+    body.dark-mode .moon-icon { display: none; }
+    body.dark-mode .sun-icon { display: block; }
+    
+    /* The rest of the CSS is unchanged */
     .input-method-tabs { display: flex; background: var(--element-bg-light); border-radius: 10px; padding: 4px; margin-bottom: 20px; } body.dark-mode .input-method-tabs { background: var(--element-bg-dark); } .tab-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; background-color: transparent; color: var(--note-color-light); font-weight: 500; cursor: pointer; font-family: 'Poppins', sans-serif; } body.dark-mode .tab-btn { color: var(--note-color-dark); } .tab-btn.active { background-color: var(--container-bg-light); color: var(--text-color-light); box-shadow: 0 2px 8px rgba(0,0,0,0.1); } body.dark-mode .tab-btn.active { background-color: var(--container-bg-dark); color: var(--text-color-dark); }
     .tab-content.hidden { display: none; } #drop-zone { border: 2px dashed rgba(0,0,0,0.1); border-radius: 10px; padding: 20px; } body.dark-mode #drop-zone { border-color: rgba(255,255,255,0.1); }
     input[type="file"] { display: none; } .file-label { display: block; width: 100%; padding: 12px; background: var(--element-bg-light); border-radius: 8px; color: var(--text-color-light); font-weight: 500; cursor: pointer; } body.dark-mode .file-label { background: var(--element-bg-dark); color: var(--text-color-dark); } #drop-zone p { color: var(--note-color-light); margin-top: 10px; font-size: 0.9rem; } body.dark-mode #drop-zone p { color: var(--note-color-dark); }
     #url-input-container { position: relative; } #imageUrlInput { width: 100%; padding: 12px 45px 12px 12px; border-radius: 8px; border: 1px solid transparent; background: var(--element-bg-light); color: var(--text-color-light); font-family: 'Poppins', sans-serif; font-size: 1rem; } body.dark-mode #imageUrlInput { background: var(--element-bg-dark); color: var(--text-color-dark); } #imageUrlInput:focus { outline: none; border-color: var(--button-bg-light); box-shadow: 0 0 0 2px var(--button-bg-light); } body.dark-mode #imageUrlInput:focus { border-color: var(--button-bg-dark); box-shadow: 0 0 0 2px var(--button-bg-dark); }
-    
-    /* --- *** UPDATED ICON STYLES *** --- */
-    #url-status-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%) scale(0.5); opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
-    #url-status-icon.visible { transform: translateY(-50%) scale(1); opacity: 1; }
-    
-    #url-status-icon.valid, #url-status-icon.invalid {
-      border-radius: 50%;
-      color: white;
-    }
-    #url-status-icon.valid { background-color: var(--valid-color); }
-    #url-status-icon.invalid { background-color: var(--invalid-color); }
-
-    #url-status-icon svg { width: 14px; height: 14px; }
-    #url-status-icon .spinner { width: 100%; height: 100%; border: 2px solid #ccc; border-top-color: var(--text-color-light); border-radius: 50%; animation: spin 1s linear infinite; } body.dark-mode #url-status-icon .spinner { border-top-color: var(--text-color-dark); } @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* The rest of the CSS is unchanged */
+    #url-status-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%) scale(0.5); opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; } #url-status-icon.visible { transform: translateY(-50%) scale(1); opacity: 1; } #url-status-icon.valid, #url-status-icon.invalid { border-radius: 50%; color: white; } #url-status-icon.valid { background-color: var(--valid-color); } #url-status-icon.invalid { background-color: var(--invalid-color); } #url-status-icon svg { width: 14px; height: 14px; } #url-status-icon .spinner { width: 100%; height: 100%; border: 2px solid #ccc; border-top-color: var(--text-color-light); border-radius: 50%; animation: spin 1s linear infinite; } body.dark-mode #url-status-icon .spinner { border-top-color: var(--text-color-dark); } @keyframes spin { to { transform: rotate(360deg); } }
     .skeleton { background-color: var(--skeleton-bg-light); border-radius: 10px; position: relative; overflow: hidden; } body.dark-mode .skeleton { background-color: var(--skeleton-bg-dark); } .skeleton::before { content: ''; position: absolute; top: 0; left: -150px; height: 100%; width: 150px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); animation: shimmer 1.5s infinite; } @keyframes shimmer { 100% { left: 100%; transform: translateX(150px); } } #skeleton-preview { display: none; width: 100%; height: 240px; margin-top: 20px; } #skeleton-download { display: none; width: 100%; height: 50px; margin-top: 10px; }
     .image-display-area { margin-top: 20px; min-height: 100px; } .image-display-area img { max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); border: 3px solid rgba(255, 255, 255, 0.7); } body.dark-mode .image-display-area img { border-color: rgba(255, 255, 255, 0.2); } #preview-container, #output-container { display: none; }
     .button-group { margin-top: 15px; } button { color: white; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border: none; border-radius: 8px; padding: 14px 20px; font-size: 1rem; cursor: pointer; width: 100%; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; } button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); } button:disabled { opacity: 0.6; cursor: not-allowed; } #removeBtn { background-color: var(--button-bg-light); } body.dark-mode #removeBtn { background-color: var(--button-bg-dark); }
@@ -38,13 +44,14 @@
   </style>
 </head>
 <body>
-    <!-- The entire HTML body is unchanged -->
     <div id="theme-transition-layer"></div>
     <div class="container" role="main">
+        <!-- *** UPDATED HTML FOR THEME TOGGLE BUTTON *** -->
         <button id="theme-toggle" title="Toggle Theme">
-          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 11.807A9.002 9.002 0 0 1 10.049 2a9.942 9.942 0 0 0-5.12 2.735c-3.905 3.905-3.905 10.237 0 14.142 3.906 3.906 10.237 3.905 14.143 0a9.946 9.946 0 0 0 2.735-5.119A9.003 9.003 0 0 1 12 11.807z"></path></svg>
-          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 0h2v3h-2zM4.222 4.222l1.414 1.414-1.414 1.414-1.414-1.414zM0 11h3v2H0zm3 10v-2h2v-2h-2v2h2v2H3zm18 0h-2v-2h2v-2h-2v2h-2v2h2zM21 11v2h3v-2zM18.364 5.636l1.414-1.414 1.414 1.414-1.414 1.414zM12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm0 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"></path></svg>
+          <span class="moon-icon">🌙</span>
+          <span class="sun-icon">☀️</span>
         </button>
+
         <h1>Background Remover</h1>
         <div class="input-method-tabs"><button class="tab-btn active" data-tab="upload">Upload File</button><button class="tab-btn" data-tab="url">Image URL</button></div>
         <div id="upload-tab" class="tab-content"><div id="drop-zone"><label for="imageInput" class="file-label">Choose an Image</label><input type="file" id="imageInput" accept="image/*"><p>or drag & drop it here</p></div></div>
@@ -63,33 +70,13 @@
         </div>
       </div>
   <script>
-    // --- *** UPDATED JAVASCRIPT *** ---
+    // The JavaScript code is completely unchanged from the last working version.
+    // It already supports showing/hiding elements with the .moon-icon and .sun-icon classes.
     const getEl = id => document.getElementById(id); const body = document.body; const tabBtns = document.querySelectorAll('.tab-btn'), tabContents = document.querySelectorAll('.tab-content'); const imageUrlInput = getEl('imageUrlInput'), urlStatusIcon = getEl('url-status-icon'); const dropZone = getEl('drop-zone'), imageInput = getEl('imageInput'), fileLabel = document.querySelector('.file-label'); const previewContainer = getEl('preview-container'), preview = getEl('preview'), outputContainer = getEl('output-container'), output = getEl('output'); const skeletonPreview = getEl('skeleton-preview'), skeletonDownload = getEl('skeleton-download'), errorMessage = getEl('error-message'); const removeBtn = getEl('removeBtn'), downloadLink = getEl('downloadLink'), downloadBtn = getEl('downloadBtn'); const themeToggleBtn = getEl('theme-toggle'), themeTransitionLayer = getEl('theme-transition-layer');
     let currentFile = null, currentUrl = '', activeTab = 'upload', urlCheckTimeout, isThemeAnimating = false;
     tabBtns.forEach(btn => { btn.addEventListener('click', () => { const tabId = btn.dataset.tab; if (activeTab === tabId) return; activeTab = tabId; tabBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); tabContents.forEach(content => content.classList.toggle('hidden', content.id !== `${tabId}-tab`)); if (activeTab !== 'url') setUrlStatus('hidden'); setUIState('idle'); }); });
     function setUIState(state, data = null) { skeletonPreview.style.display = 'none'; skeletonDownload.style.display = 'none'; errorMessage.style.display = 'none'; outputContainer.style.display = 'none'; downloadLink.style.display = 'none'; removeBtn.disabled = true; const hasInput = (activeTab === 'upload' && currentFile) || (activeTab === 'url' && currentUrl); switch(state) { case 'idle': previewContainer.style.display = hasInput ? 'block' : 'none'; removeBtn.disabled = !hasInput; break; case 'loading': previewContainer.style.display = 'none'; skeletonPreview.style.display = 'block'; skeletonDownload.style.display = 'block'; break; case 'success': output.src = data; outputContainer.style.display = 'block'; downloadLink.href = data; downloadLink.style.display = 'block'; removeBtn.disabled = false; break; case 'error': previewContainer.style.display = 'none'; errorMessage.textContent = data; errorMessage.style.display = 'block'; removeBtn.disabled = !hasInput; break; } }
-    
-    function setUrlStatus(status) {
-        urlStatusIcon.className = 'url-status-icon';
-        switch (status) {
-            case 'loading':
-                urlStatusIcon.innerHTML = '<div class="spinner"></div>';
-                urlStatusIcon.classList.add('visible');
-                break;
-            case 'valid':
-                urlStatusIcon.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7"></path></svg>';
-                urlStatusIcon.classList.add('visible', 'valid');
-                break;
-            case 'invalid':
-                // Updated SVG for the 'X' to match the request
-                urlStatusIcon.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M6 18L18 6M6 6l12 12"></path></svg>';
-                urlStatusIcon.classList.add('visible', 'invalid');
-                break;
-            case 'hidden':
-            default: break;
-        }
-    }
-    
+    function setUrlStatus(status) { urlStatusIcon.className = 'url-status-icon'; switch (status) { case 'loading': urlStatusIcon.innerHTML = '<div class="spinner"></div>'; urlStatusIcon.classList.add('visible'); break; case 'valid': urlStatusIcon.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7"></path></svg>'; urlStatusIcon.classList.add('visible', 'valid'); break; case 'invalid': urlStatusIcon.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M6 18L18 6M6 6l12 12"></path></svg>'; urlStatusIcon.classList.add('visible', 'invalid'); break; default: break; } }
     function handleFile(file) { if (file && file.type.startsWith('image/')) { currentFile = file; const reader = new FileReader(); reader.onload = e => { preview.src = e.target.result; fileLabel.textContent = currentFile.name; setUIState('idle'); }; reader.readAsDataURL(file); } else { setUIState('error', 'Please select a valid image file.'); } }
     function handleUrl() { clearTimeout(urlCheckTimeout); const url = imageUrlInput.value.trim(); if (!url) { currentUrl = ''; setUrlStatus('hidden'); setUIState('idle'); return; } setUrlStatus('loading'); urlCheckTimeout = setTimeout(() => { if (activeTab !== 'url') return; if (url.startsWith('http')) { currentUrl = url; preview.src = url; } else { currentUrl = ''; setUrlStatus('invalid'); setUIState('error', 'Please enter a valid URL (starting with http:// or https://).'); } }, 500); }
     preview.onload = () => { if(activeTab === 'url' && currentUrl) { setUrlStatus('valid'); setUIState('idle'); } };
